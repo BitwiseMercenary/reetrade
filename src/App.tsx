@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [symbol, setSymbol] = useState("");
+  const [maxPain, setMaxPain] = useState("");
+
+  const getMaxPain = async () => {
+    try {
+      // proxy isnt working for some reason
+      const response = await fetch(`/api/max-pain?symbol=${symbol}`);
+      const body = await response.text();
+
+      setMaxPain(body);
+    } catch (err) {
+      console.log({ err });
+    }
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input onChange={(e) => {
+        setSymbol(e.target.value);
+      }} value={symbol} />
+  
+      <button onClick={getMaxPain}>Max Pain</button>
+    <div>{maxPain}</div>
     </div>
   );
 }
